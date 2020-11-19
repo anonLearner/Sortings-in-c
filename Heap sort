@@ -1,0 +1,63 @@
+#include<stdio.h>
+int* heapifyBottomUp(int a[],int n)
+{
+	int *h=a;
+	int i;
+	for(i=n/2;i>0;i--)
+	{
+		int k=i,v=h[k],heap=0;
+		while(!heap&&2*k<=n)
+		{
+			int j=2*k;
+			if(j<n)
+			{
+				if(h[j]<h[j+1])
+				{
+					j=j+1;
+				}
+			}
+			if(v>h[j])
+			heap=1;
+			else
+			{
+				h[k]=h[j];
+				k=j;	
+			}
+		}
+		h[k]=v;
+	}
+	return h;
+}
+int* heapSort(int a[],int n)
+{
+    int i=1,sortedArr[6];
+    int *h=a;
+	h=heapifyBottomUp(h, n);
+	for(i=n;i>=n/2-1;i--)
+	{
+		int temp=h[1];
+		h[1]=h[i];
+		h[i]=temp;
+		h=heapifyBottomUp(h,i-1);
+	}
+    return h;
+}
+void main()
+{
+	int a[6],i;
+	printf("Enter the elements of the heap in the array representation :\n");
+	int n=sizeof(a)/sizeof(int);
+	for(i=1;i<=6;i++)
+	{
+		scanf("%d",&a[i]);
+	}
+	int *h=heapSort(a,n);
+	printf("Array after Heap sort is :\n");
+	for(i=1;i<=n;i++)
+	{
+		if(i!=n)
+		printf("%d->",h[i]);
+		else
+		printf("%d",h[i]);
+	}
+}
