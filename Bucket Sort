@@ -1,0 +1,116 @@
+#include<stdio.h>
+
+typedef struct Node
+{
+	int data;
+	struct Node* next;
+}node;
+
+node* add_element(node *sorted_head, node *new_node,node* b)
+{
+    if(sorted_head == NULL || b->data >= new_node->data)
+    {
+        new_node->next = sorted_head;
+        return new_node ;
+    }
+    else
+    {
+        node *curr = sorted_head;
+        while(curr->next != NULL && curr->next->data < new_node->data)
+            curr = curr->next;
+        new_node->next = curr->next;
+        curr->next = new_node;
+    }
+    return sorted_head;
+}
+node* insertionSortLinkedList(node *head)
+{
+    node *curr = head;
+    node *sorted_head = NULL;
+    while (curr!=NULL)
+    {
+        node *currNext = curr->next;
+        sorted_head = add_element(sorted_head,curr,head);
+        curr = currNext;
+    }
+    return sorted_head;
+}
+
+
+void bucketSort(int *a,int n)
+{
+	node **buckets;
+	buckets=(node*)malloc(n*sizeof(node));
+	
+	int i;
+	for(i=0;i<n;i++)
+		buckets[i]=NULL;
+		
+	for(i=0;i<n;i++)	//inserting elements in buckets according to respective ranges
+	{
+		node* temp=(node*)malloc(sizeof(node));
+		temp->data=a[i];
+		temp->next=buckets[a[i]/n];
+		buckets[a[i]/n]=temp;
+	}
+
+	printf("\n\nBuckets before sorting...\n\n");
+	for(i=0;i<n;i++)		//printing elements in the buckets before sorting
+	{
+		printf("bucket: %d - ",i);
+		node* temp=buckets[i];
+		while(temp)
+		{
+			printf("%d ",temp->data);
+			temp=temp->next;
+		}
+		printf("\n");
+	}
+	for(i=0;i<n;i++)
+	{
+		buckets[i]=insertionSortLinkedList(buckets[i]);
+	}
+	
+	printf("\nBuckets after sorting ...\n\n");
+
+	for(i=0;i<n;i++)		//printing elements in the buckets after sorting
+	{
+		printf("bucket: %d - ",i);
+		node* temp=buckets[i];
+		while(temp)
+		{
+			printf("%d ",temp->data);
+			temp=temp->next;
+		}
+		printf("\n");
+	}
+	
+	int j;
+	for(i=0;i<n;i++)	// inserting sorted elements in the original array
+	{
+		node* temp=buckets[i];
+		while(temp)
+		{
+			a[j++]=temp->data;
+			temp=temp->next;
+		}
+	}
+}
+
+void main()
+{
+	int a[]={45,25,10,36,48,75,12};
+	int n=sizeof(a)/sizeof(int);
+	int i;
+	printf("Elements before sorting :\n");
+	for(i=0;i<n;i++)
+	{
+		printf("%d ",a[i]);
+	}
+	bucketSort(a,n);
+	printf("\n\nThe elements are sorting are : ");
+	for(i=0;i<n;i++)
+	{
+		printf("%d ",a[i]);
+	}
+}
